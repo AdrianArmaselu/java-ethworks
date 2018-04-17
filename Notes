@@ -1,0 +1,12 @@
+
+For solidity version 4.6.0, the following constraints exist:
+
+1. You cannot return an array of elements in a function
+
+2. You cannot return a struct in a function
+
+3. You cannot pass a struct as an argument to a function
+
+When a function returns a value, the ABI encoder returns a fixed length value.
+
+Cannot have public mappings with variable length keys
