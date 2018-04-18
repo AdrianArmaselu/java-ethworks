@@ -14,7 +14,7 @@ import static org.web3j.codegen.Console.exitError;
 public class ContractClassesGenerator {
 
     private String basePackageName = "org.ethworks.generated";
-    private String filePath = "contracts/SimpleStorage.sol";
+    private String filePath = "contracts/SQLStorage.sol";
     private String outputDir = "src/main/generated";
     private boolean isUseNativeJavaTypes = true;
 
