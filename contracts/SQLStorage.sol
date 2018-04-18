@@ -1,6 +1,11 @@
 pragma solidity ^0.4.19;
 
+
+// TODO: CHECK IF A TABLE ALREADY EXISTS BEFORE CREATING ONE
 contract SQLStorage {
+
+    bytes1 comma = 44;
+    bytes1 recordSeparator = 30;
 
     // architecture
     // columnsBundle a column is maximum 32 characters
@@ -11,20 +16,20 @@ contract SQLStorage {
     // table index -> table name
     mapping(uint => string) tableNames;
     // table name -> count
-    mapping(string => uint) numberOfColumns;
+    mapping(string => uint) columnCount;
+    // table name -> count
+    mapping(string => uint) rowCount;
     // table name -> column index -> column name
     mapping(string => mapping(uint => string)) columnNames;
     // table name -> bool
     mapping(string => bool) tableExists;
     // table name -> column name -> bool
     mapping(string => mapping(string => bool)) columnExists;
+    // tablename -> column name -> index
+    mapping(string => mapping (string => uint)) columnIndex;
 
-    // actual storage
     // tablename -> column name -> index -> value
     mapping(string => mapping(string => mapping(uint => string))) tables;
-
-    // tablename -> column name -> number of columns
-    mapping(string => mapping(string => uint)) tableColumnCounts;
 
 
     function SQLStorage()
@@ -38,28 +43,69 @@ contract SQLStorage {
     {
         tableNames[numberOfTables] = tableName;
         numberOfTables += 1;
-        uint numberOfCharacters = bytes(columns).length;
+
+        bytes memory characters = bytes(columns);
+        uint charactersLen = characters.length;
         uint j = 0;
-        for (uint i = 32; i < numberOfCharacters; i += 32) {
-            string memory columnName = substring(columns, j, i);
-            j += 32;
-            columnNames[tableName][numberOfColumns[tableName]] = columnName;
-            numberOfColumns[tableName]+=1;
+
+        for (uint i = 0; i < charactersLen; i += 1) {
+            if (characters[i] == comma) {
+                string memory columnName = substring(columns, j, i);
+                columnNames[tableName][columnCount[tableName]] = columnName;
+                columnIndex[tableName][columnName] = columnCount[tableName];
+                columnCount[tableName] += 1;
+                columnExists[tableName][columnName] = true;
+                j = i + 1;
+            }
+        }
+        tableExists[tableName] = true;
+    }
+
+    // values will be of the form: v1,v2,...,vn,\30
+    function insert(string tableName, uint size, string columns, string values)
+    public
+    {
+        bytes memory chars = bytes(columns);
+        uint charsLen = chars.length;
+
+        uint j = 0;
+        uint k = 0;
+        uint[] memory indexes = new uint[](size);
+        for (uint i = 0; i < charsLen; i += 1) {
+            if (chars[i] == comma) {
+                string memory columnName = substring(columns, j, i);
+                indexes[k] = columnIndex[tableName][columnName];
+                k += 1;
+                j = i + 1;
+            }
+        }
+
+        j = 0;
+        k = 0;
+        chars = bytes(values);
+        charsLen = chars.length;
+        for(i = 0 ; i < charsLen; i++){
+            if (chars[i] == comma) {
+                string memory value = substring(values, j, i);
+                uint insertColumnIndex = indexes[k];
+                columnName = columnNames[tableName][insertColumnIndex];
+                uint rowIndex = rowCount[tableName];
+                tables[tableName][columnName][rowIndex] = value;
+                rowCount[tableName] += 1;
+                j = i + 1;
+                k += 1;
+            }
+
+            if (chars[i] == recordSeparator)
+                k = 0;
+
         }
     }
 
-    function insert(string tableName, string column, string value)
-    public
-    {
-        uint index = tableColumnCounts[tableName][column];
-        tables[tableName][column][index] = value;
-        tableColumnCounts[tableName][column] += 1;
-    }
-
-    function getValue(string tableName, string column, uint index)
+    function getValue(string tableName, string column, uint rowNumber)
     public returns (string)
     {
-        return tables[tableName][column][index];
+        return tables[tableName][column][rowNumber];
     }
 
     function getTableExists()
@@ -75,7 +121,7 @@ contract SQLStorage {
         bytes memory strBytes = bytes(str);
         bytes memory result = new bytes(endIndex - startIndex);
         for (uint i = startIndex; i < endIndex; i++)
-        result[i - startIndex] = strBytes[i];
+            result[i - startIndex] = strBytes[i];
         return string(result);
     }
 }

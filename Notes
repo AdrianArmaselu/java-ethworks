@@ -7,6 +7,8 @@ For solidity version 4.6.0, the following constraints exist:
 
 3. You cannot pass a struct as an argument to a function
 
+4. More than 16 local variables will not work.
+
 When a function returns a value, the ABI encoder returns a fixed length value.
 
 Cannot have public mappings with variable length keys

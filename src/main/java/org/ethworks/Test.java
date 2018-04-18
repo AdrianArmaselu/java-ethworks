@@ -30,5 +30,10 @@ public class Test {
         BigInteger publicKey = new BigInteger("7545e295e6850f9202930284c3324d954822b74f", 16);
         ECKeyPair ecKeyPair = new ECKeyPair(privateKey, publicKey);
         WalletUtils.generateWalletFile("ethsql", ecKeyPair, new File("wallets"), true);
+
+        char c = 30;
+        String s = "Asd" + c + "b";
+        System.out.println(s);
+
     }
 }
