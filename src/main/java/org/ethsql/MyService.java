@@ -20,7 +20,10 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collections;
 
+
+// I USE THIS CLASS FOR DEBUGGING PURPOSES
 public class MyService extends HttpService {
 
     private Web3j web3j;
@@ -34,12 +37,14 @@ public class MyService extends HttpService {
         this.transactionManager = transactionManager;
     }
 
-    public String getValueAsString(String tableName, String column, BigInteger rowNumber) {
-        Function function = new Function("getValue",
+    public String runErrorProneMethod(String tableName, BigInteger numberOfColumns, String columns, String values) {
+        Function function = new Function(
+                "insert",
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(tableName),
-                        new org.web3j.abi.datatypes.Utf8String(column),
-                        new org.web3j.abi.datatypes.generated.Uint256(rowNumber)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+                        new org.web3j.abi.datatypes.generated.Uint256(numberOfColumns),
+                        new org.web3j.abi.datatypes.Utf8String(columns),
+                        new org.web3j.abi.datatypes.Utf8String(values)),
+                Collections.<TypeReference<?>>emptyList());
         String encodedFunction = FunctionEncoder.encode(function);
         try {
             Request<?, EthCall> request = web3j.ethCall(
@@ -71,5 +76,14 @@ public class MyService extends HttpService {
 //                        ethAccountClient.getWeb3j(),
 //                        sqlStorage.getContractAddress(),
 //                        sqlStorage.getTransactionManager()
-//                ).getValueAsString("table1", "c1", BigInteger.ZERO)
+//                ).runErrorProneMethod("table1", "c1", BigInteger.ZERO)
 //        );
+
+/*
+ public TransactionManager getTransactionManager(){
+        return transactionManager;
+    }
+
+
+
+ */

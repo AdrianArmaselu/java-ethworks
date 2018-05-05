@@ -21,16 +21,36 @@ public class Main {
         SQLStorage sqlStorage = ethAccountClient.initializeContract(SQLStorage.class, null);
 
         System.out.println("Creating table...");
-        sqlStorage.createTable("table1", "c1,").send();
+        sqlStorage.createTable("table1", "c1,c2,").send();
+
+        System.out.println(sqlStorage.getColumnName("table1", BigInteger.ZERO).send());
+        System.out.println(sqlStorage.getColumnName("table1", BigInteger.ONE).send());
+
+
+//        System.out.println(
+//                new MyService(
+//                        clientConfiguration.getDeploymentNodeURL(),
+//                        ethAccountClient.getWeb3j(),
+//                        sqlStorage.getContractAddress(),
+//                        sqlStorage.getTransactionManager()
+//                ).runErrorProneMethod("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,")
+//        );
 
         System.out.println("Inserting data...");
-        sqlStorage.insert("table1", BigInteger.ONE, "c1,", "bla,").send();
+        sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,").send();
 
         System.out.println("Get Inserted Data...");
         System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
+        System.out.println(sqlStorage.getValue("table1", "c2", BigInteger.ZERO).send());
 
         System.out.println("Select");
-        System.out.println(sqlStorage.getSelect("table1", BigInteger.ONE, BigInteger.ZERO, BigInteger.ZERO, "c1,").send());
+        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ZERO, BigInteger.ZERO, "c1,c2,").send());
+
+        sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla2,pepe2,").send();
+
+        System.out.println("Select");
+        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ONE, BigInteger.ZERO, "c1,c2,").send());
+
     }
 
     public static void main(String[] args) throws Exception {
