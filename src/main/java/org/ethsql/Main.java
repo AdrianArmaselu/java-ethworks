@@ -29,6 +29,7 @@ public class Main {
 
         query = "INSERT INTO table1 (column1) VALUES (value1)";
         System.out.println("Inserting data...");
+
         //sqlStorage.insert("table1", BigInteger.ONE, "c1", "bla");
         sqlParser.parseQuery(query);
         System.out.println();
@@ -43,6 +44,15 @@ public class Main {
         System.out.println("Updating data...");
         sqlParser.parseQuery(query);
         System.out.println();
+
+        sqlStorage.insert("table1", BigInteger.ONE, "c1,", "bla,").send();
+
+        System.out.println("Get Inserted Data...");
+        System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
+
+        System.out.println("Select");
+        System.out.println(sqlStorage.getSelect("table1", BigInteger.ONE, BigInteger.ZERO, BigInteger.ZERO, "c1,").send());
+
     }
 
     public static void main(String[] args) throws Exception {
