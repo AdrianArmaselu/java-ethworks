@@ -28,6 +28,9 @@ public class Main {
 
         System.out.println("Get Inserted Data...");
         System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
+
+        System.out.println("Select");
+        System.out.println(sqlStorage.getSelect("table1", BigInteger.ONE, BigInteger.ZERO, BigInteger.ZERO, "c1,").send());
     }
 
     public static void main(String[] args) throws Exception {
