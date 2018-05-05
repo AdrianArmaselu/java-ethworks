@@ -54,37 +54,54 @@ public class SQLParser {
         // format: UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>)
         int typeIndex = 6;
         int setIndex = query.indexOf("SET");
+        int leftparenIndex = query.indexOf("(");
+        int rightparenIndex = query.indexOf(")");
+        String inputs = query.substring(leftparenIndex + 1, rightparenIndex);
+        String columns = "";
+        String values = "";
+        String inputsarray[] = inputs.split("=|,");
+        int i = 0;
+        for (i=0; i < inputsarray.length; i++) {
+            columns = columns.concat(inputsarray[i]) + ",";
+            i++;
+            values = values.concat(inputsarray[i]) + ",";
+        }
 
-
-
+        columns = columns.replaceAll("\\s+","");
+        values = values.replaceAll("\\s+","");
         String table_name = query.substring(typeIndex + 1, setIndex - 1);
+
+        System.out.println(table_name);
+        System.out.println(columns);
+        System.out.println(values);
+        // function that updates specified columns
     }
 
     private static void handleSELECT(String query) {
-        // format: SELECT * FROM <table name>
-        //         SELECT (<c1>, <c2>, ..., <cn>) FROM <table name>
+        // format: SELECT <num of columns> <start row> <end row> (<columns1, columns2, ..., columnsn>) FROM <table name>
         int typeIndex = 6;
+        int leftparencolumnIndex = query.indexOf("(");
+        int rightparencolumnIndex = query.indexOf(")");
+        int tablenameIndex = query.indexOf("FROM") + 4;
+        String table_name = query.substring(tablenameIndex + 1);
 
-        if (query.charAt(7) == '*') {
-            int tablenameIndex = 14;
-            String table_name = query.substring(tablenameIndex + 1);
-            System.out.println(table_name);
-            String columns; // = get columns from table_name
-            // function that returns data in specified columns
-        }
-        else {
-            int leftparencolumnIndex = query.indexOf("(");
-            int rightparencolumnIndex = query.indexOf(")");
-            int tablenameIndex = query.indexOf("FROM") + 4;
-            String table_name = query.substring(tablenameIndex + 1);
-            String columns = query.substring(leftparencolumnIndex+1, rightparencolumnIndex);
-            // function that returns data in the specified columns
-        }
+        String initialValues = query.substring(typeIndex+1, leftparencolumnIndex);
+        String initialvaluesarray[] = initialValues.split(" ");
+        String numOfColumns = initialvaluesarray[0];
+        String startRow = initialvaluesarray[1];
+        String endRow = initialvaluesarray[2];
+
+        String columns = query.substring(leftparencolumnIndex+1, rightparencolumnIndex);
+        columns = columns.replaceAll("\\s+","");
+        columns = columns.concat(",");
+        
+        // function that returns data in the specified column
 
     }
 
     private static void handleINSERT(String query) {
         // format: INSERT INTO <table name> (<c1>, <c2>, ..., <cn>) VALUES (<v11>, <v12>, ..., <vin>)(<v21>, <v22>, ..., <vjn>)
+        //         INSERT INTO <table name> (c1) VALUES (v1)
         int typeIndex = 11;
         int leftparencolumnIndex = query.indexOf("(");
         int rightparencolumnIndex = query.indexOf(")");

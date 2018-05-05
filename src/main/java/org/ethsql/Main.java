@@ -20,28 +20,29 @@ public class Main {
         System.out.println("Initializing contract...");
         SQLStorage sqlStorage = ethAccountClient.initializeContract(SQLStorage.class, null);
         SQLParser sqlParser = new SQLParser(sqlStorage);
+        System.out.println();
 
         String query = "CREATE TABLE table1 (column1, column2, column3)";
         System.out.println("Creating table...");
-
         sqlParser.parseQuery(query);
-        sqlStorage.createTable("table1", "c1,").send();
+        System.out.println();
 
-        query = "INSERT INTO table1 (column1, column2) VALUES (value11, value12)(value21, value22)(value31, value32)";
+        query = "INSERT INTO table1 (column1) VALUES (value1)";
         System.out.println("Inserting data...");
-
         //sqlStorage.insert("table1", BigInteger.ONE, "c1", "bla");
         sqlParser.parseQuery(query);
+        System.out.println();
 
-        query = "SELECT * FROM table1";
+        query = "SELECT 1 1 1 (column1) FROM table1";
         System.out.println("Retrieving data...");
         //System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
         sqlParser.parseQuery(query);
+        System.out.println();
 
-        sqlStorage.insert("table1", BigInteger.ONE, "c1,", "bla,").send();
-
-        System.out.println("Get Inserted Data...");
-        System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
+        query = "UPDATE table1 SET (column1 = value1, column2 = value2, column3 = value3)";
+        System.out.println("Updating data...");
+        sqlParser.parseQuery(query);
+        System.out.println();
     }
 
     public static void main(String[] args) throws Exception {
