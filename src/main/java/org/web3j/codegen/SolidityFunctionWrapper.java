@@ -229,7 +229,7 @@ public class SolidityFunctionWrapper extends Generator {
                         BINARY, CONTRACT_ADDRESS, WEB3J, authName, GAS_PRICE, GAS_LIMIT)
                 .addCode(
                     "try {\n" +
-                            "            send(null, BINARY, BigInteger.ZERO, gasPrice, gasLimit);\n" +
+                            "            this.contractAddress = send(null, BINARY, BigInteger.ZERO, gasPrice, gasLimit).getContractAddress();\n" +
                             "        } catch ($T | $T e) {\n" +
                             "            e.printStackTrace();\n" +
                             "        }\n", IOException.class, TransactionException.class)

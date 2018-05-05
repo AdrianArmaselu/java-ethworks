@@ -27,15 +27,27 @@ contract SQLStorage {
     mapping(string => mapping(string => bool)) columnExists;
     // tablename -> column name -> index
     mapping(string => mapping (string => uint)) columnIndex;
-
     // tablename -> column name -> index -> value
     mapping(string => mapping(string => mapping(uint => string))) tables;
 
+
+    string myString;
 
     function SQLStorage()
     public
     {
 
+    }
+
+    function insertString(string someString)
+    public
+    {
+        myString = someString;
+    }
+
+    function getInsertedString()
+    public view returns (string){
+        return myString;
     }
 
     function createTable(string tableName, string columns)
@@ -61,16 +73,18 @@ contract SQLStorage {
         tableExists[tableName] = true;
     }
 
+    // need to process rows of values and not just one row
     // values will be of the form: v1,v2,...,vn,\30
-    function insert(string tableName, uint size, string columns, string values)
+    function insert(string tableName, uint numberOfColumns, string columns, string values)
     public
     {
         bytes memory chars = bytes(columns);
         uint charsLen = chars.length;
 
+        // get the columns that are getting updated
         uint j = 0;
         uint k = 0;
-        uint[] memory indexes = new uint[](size);
+        uint[] memory indexes = new uint[](numberOfColumns);
         for (uint i = 0; i < charsLen; i += 1) {
             if (chars[i] == comma) {
                 string memory columnName = substring(columns, j, i);
@@ -80,6 +94,7 @@ contract SQLStorage {
             }
         }
 
+        // update table value and row count
         j = 0;
         k = 0;
         chars = bytes(values);
@@ -102,10 +117,28 @@ contract SQLStorage {
         }
     }
 
+    function getTableNumberCounter()
+    public returns(uint)
+    {
+        return numberOfTables;
+    }
+
+    function getTableName(uint tableIndex)
+    public returns(string)
+    {
+        return tableNames[tableIndex];
+    }
+
     function getValue(string tableName, string column, uint rowNumber)
     public returns (string)
     {
         return tables[tableName][column][rowNumber];
+    }
+
+    function getColumnName(string tableName, uint columnIndex)
+    public returns(string)
+    {
+        return columnNames[tableName][columnIndex];
     }
 
     function getTableExists()

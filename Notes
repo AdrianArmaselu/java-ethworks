@@ -12,3 +12,6 @@ For solidity version 4.6.0, the following constraints exist:
 When a function returns a value, the ABI encoder returns a fixed length value.
 
 Cannot have public mappings with variable length keys
+
+
+\(([^]+)\)

@@ -26,10 +26,10 @@ public class Test {
 
     public static void main(String[] args) throws CipherException, IOException {
 
-        BigInteger privateKey = new BigInteger("f49d3b04bd59f683bf2d918a344753f3c9649d7e39750d7b8489485e2d24aa27", 16);
-        BigInteger publicKey = new BigInteger("7545e295e6850f9202930284c3324d954822b74f", 16);
+        BigInteger privateKey = new BigInteger("fff41e9a54ebb3aec2017cc5d9c76e1ef22cf3814438877bae2d42f08744bbfb", 16);
+        BigInteger publicKey = new BigInteger("4f8615267a90a269cef5fede3e0823f0387d13f9", 16);
         ECKeyPair ecKeyPair = new ECKeyPair(privateKey, publicKey);
-        WalletUtils.generateWalletFile("ethsql", ecKeyPair, new File("wallets"), true);
+        WalletUtils.generateWalletFile("ethsql", ecKeyPair, new File("wallets/wallet2"), true);
 
         char c = 30;
         String s = "Asd" + c + "b";
