@@ -36,9 +36,11 @@ public class Main {
 
         System.out.println("Initializing contract...");
         SQLStorage sqlStorage = ethAccountClient.initializeContract(SQLStorage.class, null);
+        SQLParser sqlParser = new SQLParser();
 
+        String query = "CREATE TABLE table1 (column1, column2, column3)";
         System.out.println("Creating table...");
-        sqlStorage.createTable("table1", "c1");
+        sqlParser.parseQuery(query);
 
         System.out.println("Inserting data...");
         sqlStorage.insert("table1", BigInteger.ONE, "c1", "bla");
