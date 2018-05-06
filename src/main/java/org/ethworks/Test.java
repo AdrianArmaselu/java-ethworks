@@ -20,20 +20,21 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 public class Test {
 
-    public static void main(String[] args) throws CipherException, IOException {
+    public static void main(String[] args) throws CipherException, IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
 
-        BigInteger privateKey = new BigInteger("fff41e9a54ebb3aec2017cc5d9c76e1ef22cf3814438877bae2d42f08744bbfb", 16);
-        BigInteger publicKey = new BigInteger("4f8615267a90a269cef5fede3e0823f0387d13f9", 16);
-        ECKeyPair ecKeyPair = new ECKeyPair(privateKey, publicKey);
-        WalletUtils.generateWalletFile("ethsql", ecKeyPair, new File("wallets/wallet2"), true);
-
-        char c = 30;
-        String s = "Asd" + c + "b";
-        System.out.println(s);
+//        BigInteger privateKey = new BigInteger("fff41e9a54ebb3aec2017cc5d9c76e1ef22cf3814438877bae2d42f08744bbfb", 16);
+//        BigInteger publicKey = new BigInteger("4f8615267a90a269cef5fede3e0823f0387d13f9", 16);
+//        ECKeyPair ecKeyPair = new ECKeyPair(privateKey, publicKey);
+//        WalletUtils.generateWalletFile("ethsql", ecKeyPair, new File("wallets/wallet2"), true);
+//
+        WalletUtils.generateNewWalletFile("ethsql", new File("wallets/ropsten"), true);
 
     }
 }

@@ -99,6 +99,7 @@ contract SQLStorage {
             if (chars[i] == recordSeparator){
                 rowCount[tableName] += 1;
                 k = 0;
+                j += 1;
             }
         }
         rowCount[tableName] += 1;
@@ -148,6 +149,42 @@ contract SQLStorage {
             k += 1;
         }
         return string(row);
+
+    }
+
+    function update(string tableName, uint numberOfColumns, uint rowIndex, string columns, string values)
+    public
+    {
+        bytes memory chars = bytes(columns);
+        uint charsLen = chars.length;
+
+        // get the columns that are getting updated
+        uint j = 0;
+        uint k = 0;
+        uint[] memory indexes = new uint[](numberOfColumns);
+        for (uint i = 0; i < charsLen; i += 1) {
+            if (chars[i] == comma) {
+                string memory columnName = substring(columns, j, i);
+                indexes[k] = columnIndex[tableName][columnName];
+                k += 1;
+                j = i + 1;
+            }
+        }
+
+        j = 0;
+        k = 0;
+        chars = bytes(values);
+        charsLen = chars.length;
+        for (i = 0; i < charsLen; i++) {
+            if (chars[i] == comma) {
+                string memory value = substring(values, j, i);
+                uint insertColumnIndex = indexes[k];
+                columnName = columnNames[tableName][insertColumnIndex];
+                tables[tableName][columnName][rowIndex] = value;
+                j = i + 1;
+                k += 1;
+            }
+        }
 
     }
 
