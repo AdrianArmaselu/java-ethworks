@@ -27,31 +27,24 @@ public class Main {
         sqlParser.parseQuery(query);
         System.out.println();
 
-        query = "INSERT INTO table1 (column1) VALUES (value1)";
+        query = "INSERT INTO table1 (column1, column2, column3) VALUES (value11, value12, value13)(value21, value22, value23)(value31, value32, value33)";
         System.out.println("Inserting data...");
-
-        //sqlStorage.insert("table1", BigInteger.ONE, "c1", "bla");
         sqlParser.parseQuery(query);
         System.out.println();
 
-        query = "SELECT 1 1 1 (column1) FROM table1";
+        //query = "SELECT 1 0 2 (column1) FROM table1";
         System.out.println("Retrieving data...");
-        //System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
+        //sqlParser.parseQuery(query);
+        query = "SELECT 1 0 2 (column2) FROM table1";
         sqlParser.parseQuery(query);
+        //query = "SELECT 1 0 2 (column3) FROM table1";
+        //sqlParser.parseQuery(query);
         System.out.println();
 
         query = "UPDATE table1 SET (column1 = value1, column2 = value2, column3 = value3)";
         System.out.println("Updating data...");
         sqlParser.parseQuery(query);
         System.out.println();
-
-        sqlStorage.insert("table1", BigInteger.ONE, "c1,", "bla,").send();
-
-        System.out.println("Get Inserted Data...");
-        System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
-
-        System.out.println("Select");
-        System.out.println(sqlStorage.getSelect("table1", BigInteger.ONE, BigInteger.ZERO, BigInteger.ZERO, "c1,").send());
 
     }
 

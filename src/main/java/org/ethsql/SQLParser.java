@@ -18,6 +18,7 @@ import org.web3j.tx.TransactionManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.math.*;
 import java.util.Arrays;
 import java.util.regex.*;
 import java.util.concurrent.CompletableFuture;
@@ -29,7 +30,7 @@ public class SQLParser {
         sqlStorage = sqlS;
     }
 
-    public static void parseQuery(String query) {
+    public static void parseQuery(String query) throws Exception {
         int typeIndex = query.indexOf(" ");
         String type = query.substring(0, typeIndex);
         type = type.toUpperCase();
@@ -50,7 +51,7 @@ public class SQLParser {
         }
     }
 
-    private static void handleUPDATE(String query) {
+    private static void handleUPDATE(String query) throws Exception {
         // format: UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>)
         int typeIndex = 6;
         int setIndex = query.indexOf("SET");
@@ -77,7 +78,7 @@ public class SQLParser {
         // function that updates specified columns
     }
 
-    private static void handleSELECT(String query) {
+    private static void handleSELECT(String query) throws Exception {
         // format: SELECT <num of columns> <start row> <end row> (<columns1, columns2, ..., columnsn>) FROM <table name>
         int typeIndex = 6;
         int leftparencolumnIndex = query.indexOf("(");
@@ -85,21 +86,29 @@ public class SQLParser {
         int tablenameIndex = query.indexOf("FROM") + 4;
         String table_name = query.substring(tablenameIndex + 1);
 
-        String initialValues = query.substring(typeIndex+1, leftparencolumnIndex);
+        String initialValues = query.substring(typeIndex + 1, leftparencolumnIndex);
         String initialvaluesarray[] = initialValues.split(" ");
-        String numOfColumns = initialvaluesarray[0];
-        String startRow = initialvaluesarray[1];
-        String endRow = initialvaluesarray[2];
+        int numOfColumns = Integer.parseInt(initialvaluesarray[0]);
+        int startRow = Integer.parseInt(initialvaluesarray[1]);
+        int endRow = Integer.parseInt(initialvaluesarray[2]);
 
-        String columns = query.substring(leftparencolumnIndex+1, rightparencolumnIndex);
-        columns = columns.replaceAll("\\s+","");
+        String columns = query.substring(leftparencolumnIndex + 1, rightparencolumnIndex);
+        columns = columns.replaceAll("\\s+", "");
         columns = columns.concat(",");
-        
-        // function that returns data in the specified column
+
+        String rows[] = new String[endRow - startRow + 1];
+        int i = 0;
+        int temp = startRow;
+        do {
+            rows[i] = String.valueOf(sqlStorage.getSelect(table_name, BigInteger.valueOf(numOfColumns), BigInteger.valueOf(temp), BigInteger.valueOf(endRow), columns).send());
+            System.out.println(rows[i]);
+            temp++;
+            i++;
+        } while (temp <= endRow);
 
     }
 
-    private static void handleINSERT(String query) {
+    private static void handleINSERT(String query) throws Exception {
         // format: INSERT INTO <table name> (<c1>, <c2>, ..., <cn>) VALUES (<v11>, <v12>, ..., <vin>)(<v21>, <v22>, ..., <vjn>)
         //         INSERT INTO <table name> (c1) VALUES (v1)
         int typeIndex = 11;
@@ -130,6 +139,10 @@ public class SQLParser {
         String columns = query.substring(leftparencolumnIndex+1, rightparencolumnIndex);
         columns = columns.replaceAll("\\s+","");
         columns = columns.concat(",");
+        int numOfColumns = 0;
+
+        String colArr[] = columns.split(",");
+        numOfColumns = colArr.length;
 
         System.out.println(table_name);
         System.out.println(columns);
@@ -138,11 +151,11 @@ public class SQLParser {
             rows[i] = rows[i].replaceAll("\\s+", "");
             rows[i] = rows[i].concat(",");
             System.out.println(rows[i]);
-            sqlStorage.insert(table_name, BigInteger.ONE, columns, rows[i]);
+            sqlStorage.insert(table_name, BigInteger.valueOf(numOfColumns), columns, rows[i]).send();
         }
     }
 
-    private static void handleCREATE(String query) {
+    private static void handleCREATE(String query) throws Exception {
         // format: CREATE TABLE <table name> (<c1>, <c2>, ..., <cn>)
         int typeIndex = 12;
         int leftparenIndex = query.indexOf("(");
@@ -155,6 +168,6 @@ public class SQLParser {
 
         System.out.println(table_name);
         System.out.println(columns);
-        sqlStorage.createTable(table_name, columns);
+        sqlStorage.createTable(table_name, columns).send();
     }
 }
