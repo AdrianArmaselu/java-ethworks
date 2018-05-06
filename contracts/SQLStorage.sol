@@ -5,7 +5,7 @@ pragma solidity ^0.4.19;
 contract SQLStorage {
 
     bytes1 comma = 44;
-    bytes1 recordSeparator = 30;
+    bytes1 recordSeparator = 124;
 
     // architecture
     // columnsBundle a column is maximum 32 characters
