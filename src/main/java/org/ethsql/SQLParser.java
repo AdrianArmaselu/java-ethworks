@@ -52,12 +52,11 @@ public class SQLParser {
     }
 
     private static void handleUPDATE(String query) throws Exception {
-        // format: UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>) WHERE <row index>
+        // format: UPDATE <table name> SET <c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn> WHERE <row index>
         int typeIndex = 6;
         int setIndex = query.indexOf("SET");
-        int leftparenIndex = query.indexOf("(");
-        int rightparenIndex = query.indexOf(")");
-        String inputs = query.substring(leftparenIndex + 1, rightparenIndex);
+        int whereIndex = query.indexOf("WHERE");
+        String inputs = query.substring(setIndex + 4, whereIndex - 1);
         String columns = "";
         String values = "";
         String inputsarray[] = inputs.split("=|,");
@@ -68,7 +67,6 @@ public class SQLParser {
             values = values.concat(inputsarray[i]) + ",";
         }
 
-        int whereIndex = query.indexOf("WHERE");
         String rowIndexstring = query.substring(whereIndex + 6);
         int rowIndex = Integer.parseInt(rowIndexstring);
         int numOfColumns = inputsarray.length / 2;
@@ -80,16 +78,16 @@ public class SQLParser {
         System.out.println(table_name);
         System.out.println(columns);
         System.out.println(values);
+        System.out.println(rowIndex);
         sqlStorage.update(table_name,BigInteger.valueOf(numOfColumns),BigInteger.valueOf(rowIndex),columns, values).send();
-        // function that updates specified columns
     }
 
     private static void handleSELECT(String query) throws Exception {
-        // format: SELECT <columns1, columns2, ..., columnsn FROM <table name>
+        // format: SELECT <columns1, columns2, ..., columnsn> FROM <table name>
         int typeIndex = 6;
         int rightIndex = query.indexOf("FROM") - 1;
         int tablenameIndex = query.indexOf("FROM");
-        String table_name = query.substring(tablenameIndex + 1);
+        String table_name = query.substring(tablenameIndex + 5);
 
         String columns = query.substring(typeIndex + 1, rightIndex);
         columns = columns.replaceAll("\\s+", "");
@@ -100,9 +98,11 @@ public class SQLParser {
         numOfColumns = colArr.length;
 
         int startRow = 0;
-        int endRow = 0;
+        BigInteger endRowb = sqlStorage.getRowCount(table_name).send();
+        int endRow = endRowb.intValue();
 
         String rows[] = new String[endRow];
+        endRow--;
         int i = 0;
         do {
             rows[i] = String.valueOf(sqlStorage.getSelect(table_name, BigInteger.valueOf(numOfColumns), BigInteger.valueOf(startRow), BigInteger.valueOf(endRow), columns).send());

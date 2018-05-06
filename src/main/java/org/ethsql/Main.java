@@ -31,7 +31,7 @@ public class Main {
                 INSERT INTO <table name> (<c1>, <c2>, ..., <cn>) VALUES (<v11>, <v12>, ..., <vin>)(<v21>, <v22>, ..., <vjn>)...()
 
             SELECT:
-                SELECT <num of columns> <start row> <end row> (<columns1, columns2, ..., columnsn>) FROM <table name>
+                SELECT <columns1, columns2, ..., columnsn> FROM <table name>
 
             UPDATE:
                 UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>) WHERE <row index>
@@ -46,7 +46,7 @@ public class Main {
         sqlParser.parseQuery(query);
         System.out.println();
 
-        query = "SELECT column1, column2 FROM table1";
+        query = "SELECT column1 FROM table1";
         System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
         query = "SELECT column2 FROM table1";
@@ -61,12 +61,12 @@ public class Main {
         System.out.println();
 
 
-        query = "SELECT 1 0 2 (column1) FROM table1";
+        query = "SELECT column1 FROM table1";
         System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        query = "SELECT 1 0 2 (column2) FROM table1";
+        query = "SELECT column2 FROM table1";
         sqlParser.parseQuery(query);
-        query = "SELECT 1 0 2 (column3) FROM table1";
+        query = "SELECT column3 FROM table1";
         sqlParser.parseQuery(query);
         System.out.println();
 
