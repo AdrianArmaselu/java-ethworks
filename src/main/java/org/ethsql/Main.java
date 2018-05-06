@@ -51,10 +51,13 @@ public class Main {
         System.out.println("Select");
         System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ONE, BigInteger.ZERO, "c1,c2,").send());
 
-        sqlStorage.update("table1", new BigInteger("2"),  BigInteger.ZERO, "c1,c2,", "bla3,pepe3,").send();
+//        sqlStorage.update("table1", new BigInteger("2"),  BigInteger.ZERO, "c1,c2,", "bla3,pepe3,").send();
 
-        System.out.println("Select");
-        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ZERO, BigInteger.ZERO, "c1,c2,").send());
+//        System.out.println("Select");
+//        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ZERO, BigInteger.ZERO, "c1,c2,").send());
+
+        System.out.println(sqlStorage.getSelect("table1", new BigInteger("1"), BigInteger.ZERO, BigInteger.ZERO, "c1,").send());
+        System.out.println(sqlStorage.getSelect("table1", new BigInteger("1"), BigInteger.ONE, BigInteger.ZERO, "c1,").send());
 
     }
 

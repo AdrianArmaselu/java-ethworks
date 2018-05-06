@@ -218,6 +218,12 @@ contract SQLStorage {
         return true;
     }
 
+    function getRowCount(string tableName)
+    public returns (uint)
+    {
+        return rowCount[tableName];
+    }
+
     // function copied from https://ethereum.stackexchange.com/questions/31457/substring-in-solidity
     function substring(string str, uint startIndex, uint endIndex)
     internal constant returns (string)
