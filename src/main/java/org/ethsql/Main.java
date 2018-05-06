@@ -76,7 +76,12 @@ public class Main {
 
         System.out.println("Select");
         System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ONE, BigInteger.ZERO, "c1,c2,").send());
+<<<<<<< HEAD
 */
+        //sqlStorage.update("table1", new BigInteger("2"),  BigInteger.ZERO, "c1,c2,", "bla3,pepe3,").send();
+
+        //System.out.println("Select");
+        //System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ZERO, BigInteger.ZERO, "c1,c2,").send());
     }
 
     public static void main(String[] args) throws Exception {
