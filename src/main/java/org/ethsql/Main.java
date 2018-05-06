@@ -49,13 +49,13 @@ public class Main {
         sqlParser.parseQuery(query);
         System.out.println();
 
-        //query = "SELECT 1 0 2 (column1) FROM table1";
+        query = "SELECT 1 0 2 (column1) FROM table1";
         System.out.println("Retrieving data...");
-        //sqlParser.parseQuery(query);
+        sqlParser.parseQuery(query);
         query = "SELECT 1 0 2 (column2) FROM table1";
         sqlParser.parseQuery(query);
-        //query = "SELECT 1 0 2 (column3) FROM table1";
-        //sqlParser.parseQuery(query);
+        query = "SELECT 1 0 2 (column3) FROM table1";
+        sqlParser.parseQuery(query);
         System.out.println();
 
         query = "UPDATE table1 SET (column1 = value1, column2 = value2, column3 = value3)";
