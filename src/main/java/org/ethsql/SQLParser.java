@@ -78,7 +78,7 @@ public class SQLParser {
         System.out.println(table_name);
         System.out.println(columns);
         System.out.println(values);
-        System.out.println(rowIndex);
+        //System.out.println(rowIndex);
         sqlStorage.update(table_name,BigInteger.valueOf(numOfColumns),BigInteger.valueOf(rowIndex),columns, values).send();
     }
 
@@ -110,7 +110,7 @@ public class SQLParser {
             startRow++;
             i++;
         } while (startRow <= endRow);
-
+        System.out.println();
     }
 
     private static void handleINSERT(String query) throws Exception {

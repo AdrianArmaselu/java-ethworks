@@ -1,14 +1,18 @@
 package org.ethsql;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import org.ethworks.CommandLine;
 import org.ethworks.client.ClientConfiguration;
 import org.ethworks.client.EthAccountClient;
 import org.ethworks.generated.SQLStorage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 
 public class Main {
 
-    void run() throws Exception {
+    public static void main(String[] args) throws Exception {
         ClientConfiguration clientConfiguration = new ClientConfiguration("src/main/resources/genache.conf");
         EthAccountClient ethAccountClient = new EthAccountClient(clientConfiguration);
 
@@ -37,56 +41,98 @@ public class Main {
                 UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>) WHERE <row index>
         */
 
-        String query = "CREATE TABLE table1 (column1, column2, column3)";
+        String query = "CREATE TABLE People (SSN, Name, Age, Occupation)";
+        System.out.println(query);
         System.out.println("Creating table...");
-
-        query = "INSERT INTO table1 (column1, column2, column3) VALUES (value11, value12, value13)(value21, value22, value23)(value31, value32, value33)";
-        System.out.println("Inserting data...");
-
         sqlParser.parseQuery(query);
         System.out.println();
 
-        query = "SELECT column1 FROM table1";
+        query = "INSERT INTO People (SSN, Name, Age, Occupation) VALUES (1111, Bill, 22, Student)(2222, Jane, 23, System Engineer)(33333, Alice, 34, Doctor)";
+        System.out.println(query);
+        System.out.println("Inserting data...");
+        sqlParser.parseQuery(query);
+        System.out.println();
+
+        query = "SELECT SSN FROM People";
+        System.out.println(query);
         System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        query = "SELECT column2 FROM table1";
+        query = "SELECT Name FROM People";
+        System.out.println(query);
+        System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        query = "SELECT column3 FROM table1";
+        query = "SELECT Age FROM People";
+        System.out.println(query);
+        System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        System.out.println();
+        query = "SELECT Occupation FROM People";
+        System.out.println(query);
+        System.out.println("Retrieving data...");
+        sqlParser.parseQuery(query);
 
-        query = "UPDATE table1 SET column1 = value1, column2 = value2, column3 = value3 WHERE 2";
+        query = "UPDATE People SET SSN = 4444, Name = Jack, Age = 46, Occupation = Lumberjack WHERE 0";
+        System.out.println(query);
         System.out.println("Updating data...");
         sqlParser.parseQuery(query);
         System.out.println();
 
 
-        query = "SELECT column1 FROM table1";
+        query = "SELECT SSN FROM People";
+        System.out.println(query);
         System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        query = "SELECT column2 FROM table1";
+        query = "SELECT Name FROM People";
+        System.out.println(query);
+        System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        query = "SELECT column3 FROM table1";
+        query = "SELECT Age FROM People";
+        System.out.println(query);
+        System.out.println("Retrieving data...");
         sqlParser.parseQuery(query);
-        System.out.println();
+        query = "SELECT Occupation FROM People";
+        System.out.println(query);
+        System.out.println("Retrieving data...");
+        sqlParser.parseQuery(query);
+    }
 
-        /*
-        sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,").send();
+    /*
+    void run(String query) throws Exception {
+        ClientConfiguration clientConfiguration = new ClientConfiguration("src/main/resources/genache.conf");
+        EthAccountClient ethAccountClient = new EthAccountClient(clientConfiguration);
 
-        System.out.println("Get Inserted Data...");
-        System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
-        System.out.println(sqlStorage.getValue("table1", "c2", BigInteger.ZERO).send());
+        System.out.println("Account Address: " + clientConfiguration.getDeploymentAccountCredentials().getAddress());
+        System.out.println("Account Private Key: " + clientConfiguration.getDeploymentAccountCredentials().getEcKeyPair().getPrivateKey());
+        System.out.println("Account Public Key: " + clientConfiguration.getDeploymentAccountCredentials().getEcKeyPair().getPublicKey());
+        System.out.println("Account Balance(wei): " + ethAccountClient.getBalance());
 
-        System.out.println("Select");
-        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ZERO, BigInteger.ZERO, "c1,c2,").send());
+        System.out.println("Initializing contract...");
+        SQLStorage sqlStorage = ethAccountClient.initializeContract(SQLStorage.class, null);
+        SQLParser sqlParser = new SQLParser(sqlStorage);
+        sqlParser.parseQuery(query);
+    }
 
-        sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla2,pepe2,").send();
-
-        System.out.println("Select");
-        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ONE, BigInteger.ZERO, "c1,c2,").send());*/
+    private void executeCommands(String[] args) throws Exception {
+        SqlArgs sqlArgs = new SqlArgs();
+        JCommander.newBuilder()
+                .addObject(sqlArgs)
+                .build()
+                .parse(args);
+        Main main = new Main();
+        main.run(sqlArgs.getQuery());
     }
 
     public static void main(String[] args) throws Exception {
-        new Main().run();
+//        new Main().executeCommands(args);
     }
+
+    private class SqlArgs{
+
+        @Parameter(names = {"--query", "-q"}, description = "the query to execute")
+        private String query;
+
+        public String getQuery() {
+            return query;
+        }
+    }
+    */
 }
