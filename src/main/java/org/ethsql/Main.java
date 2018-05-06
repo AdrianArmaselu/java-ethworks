@@ -22,32 +22,44 @@ public class Main {
         SQLParser sqlParser = new SQLParser(sqlStorage);
         System.out.println();
 
+        /*
+        Query format:
+            CREATE:
+                CREATE TABLE <table name> (<c1>, <c2>, ..., <cn>)
+
+            INSERT:
+                INSERT INTO <table name> (<c1>, <c2>, ..., <cn>) VALUES (<v11>, <v12>, ..., <vin>)(<v21>, <v22>, ..., <vjn>)...()
+
+            SELECT:
+                SELECT <num of columns> <start row> <end row> (<columns1, columns2, ..., columnsn>) FROM <table name>
+
+            UPDATE:
+                UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>) WHERE <row index>
+        */
+
         String query = "CREATE TABLE table1 (column1, column2, column3)";
         System.out.println("Creating table...");
-/*
-        sqlParser.parseQuery(query);
-        System.out.println();
-
-        sqlStorage.createTable("table1", "c1,c2,").send();
-
-        System.out.println(sqlStorage.getColumnName("table1", BigInteger.ZERO).send());
-        System.out.println(sqlStorage.getColumnName("table1", BigInteger.ONE).send());
-
-
-//        System.out.println(
-//                new MyService(
-//                        clientConfiguration.getDeploymentNodeURL(),
-//                        ethAccountClient.getWeb3j(),
-//                        sqlStorage.getContractAddress(),
-//                        sqlStorage.getTransactionManager()
-//                ).runErrorProneMethod("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,")
-//        );*/
 
         query = "INSERT INTO table1 (column1, column2, column3) VALUES (value11, value12, value13)(value21, value22, value23)(value31, value32, value33)";
         System.out.println("Inserting data...");
 
         sqlParser.parseQuery(query);
         System.out.println();
+
+        query = "SELECT column1, column2 FROM table1";
+        System.out.println("Retrieving data...");
+        sqlParser.parseQuery(query);
+        query = "SELECT column2 FROM table1";
+        sqlParser.parseQuery(query);
+        query = "SELECT column3 FROM table1";
+        sqlParser.parseQuery(query);
+        System.out.println();
+
+        query = "UPDATE table1 SET column1 = value1, column2 = value2, column3 = value3 WHERE 2";
+        System.out.println("Updating data...");
+        sqlParser.parseQuery(query);
+        System.out.println();
+
 
         query = "SELECT 1 0 2 (column1) FROM table1";
         System.out.println("Retrieving data...");
@@ -58,10 +70,6 @@ public class Main {
         sqlParser.parseQuery(query);
         System.out.println();
 
-        query = "UPDATE table1 SET (column1 = value1, column2 = value2, column3 = value3)";
-        System.out.println("Updating data...");
-        sqlParser.parseQuery(query);
-        System.out.println();
         /*
         sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,").send();
 

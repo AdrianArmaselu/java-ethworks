@@ -52,7 +52,7 @@ public class SQLParser {
     }
 
     private static void handleUPDATE(String query) throws Exception {
-        // format: UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>)
+        // format: UPDATE <table name> SET (<c1> = <v1>, <c2> = <v2>, ..., <cn> = <vn>) WHERE <row index>
         int typeIndex = 6;
         int setIndex = query.indexOf("SET");
         int leftparenIndex = query.indexOf("(");
@@ -68,6 +68,11 @@ public class SQLParser {
             values = values.concat(inputsarray[i]) + ",";
         }
 
+        int whereIndex = query.indexOf("WHERE");
+        String rowIndexstring = query.substring(whereIndex + 6);
+        int rowIndex = Integer.parseInt(rowIndexstring);
+        int numOfColumns = inputsarray.length / 2;
+
         columns = columns.replaceAll("\\s+","");
         values = values.replaceAll("\\s+","");
         String table_name = query.substring(typeIndex + 1, setIndex - 1);
@@ -75,42 +80,42 @@ public class SQLParser {
         System.out.println(table_name);
         System.out.println(columns);
         System.out.println(values);
+        sqlStorage.update(table_name,BigInteger.valueOf(numOfColumns),BigInteger.valueOf(rowIndex),columns, values).send();
         // function that updates specified columns
     }
 
     private static void handleSELECT(String query) throws Exception {
-        // format: SELECT <num of columns> <start row> <end row> (<columns1, columns2, ..., columnsn>) FROM <table name>
+        // format: SELECT <columns1, columns2, ..., columnsn FROM <table name>
         int typeIndex = 6;
-        int leftparencolumnIndex = query.indexOf("(");
-        int rightparencolumnIndex = query.indexOf(")");
-        int tablenameIndex = query.indexOf("FROM") + 4;
+        int rightIndex = query.indexOf("FROM") - 1;
+        int tablenameIndex = query.indexOf("FROM");
         String table_name = query.substring(tablenameIndex + 1);
 
-        String initialValues = query.substring(typeIndex + 1, leftparencolumnIndex);
-        String initialvaluesarray[] = initialValues.split(" ");
-        int numOfColumns = Integer.parseInt(initialvaluesarray[0]);
-        int startRow = Integer.parseInt(initialvaluesarray[1]);
-        int endRow = Integer.parseInt(initialvaluesarray[2]);
-
-        String columns = query.substring(leftparencolumnIndex + 1, rightparencolumnIndex);
+        String columns = query.substring(typeIndex + 1, rightIndex);
         columns = columns.replaceAll("\\s+", "");
         columns = columns.concat(",");
 
-        String rows[] = new String[endRow - startRow + 1];
+        int numOfColumns = 0;
+        String colArr[] = columns.split(",");
+        numOfColumns = colArr.length;
+
+        int startRow = 0;
+        int endRow = 0;
+
+        String rows[] = new String[endRow];
         int i = 0;
-        int temp = startRow;
         do {
-            rows[i] = String.valueOf(sqlStorage.getSelect(table_name, BigInteger.valueOf(numOfColumns), BigInteger.valueOf(temp), BigInteger.valueOf(endRow), columns).send());
+            rows[i] = String.valueOf(sqlStorage.getSelect(table_name, BigInteger.valueOf(numOfColumns), BigInteger.valueOf(startRow), BigInteger.valueOf(endRow), columns).send());
             System.out.println(rows[i]);
-            temp++;
+            startRow++;
             i++;
-        } while (temp <= endRow);
+        } while (startRow <= endRow);
 
     }
 
     private static void handleINSERT(String query) throws Exception {
         // format: INSERT INTO <table name> (<c1>, <c2>, ..., <cn>) VALUES (<v11>, <v12>, ..., <vin>)(<v21>, <v22>, ..., <vjn>)
-        //         INSERT INTO <table name> (c1) VALUES (v1)
+
         int typeIndex = 11;
         int leftparencolumnIndex = query.indexOf("(");
         int rightparencolumnIndex = query.indexOf(")");
@@ -139,8 +144,8 @@ public class SQLParser {
         String columns = query.substring(leftparencolumnIndex+1, rightparencolumnIndex);
         columns = columns.replaceAll("\\s+","");
         columns = columns.concat(",");
-        int numOfColumns = 0;
 
+        int numOfColumns = 0;
         String colArr[] = columns.split(",");
         numOfColumns = colArr.length;
 
