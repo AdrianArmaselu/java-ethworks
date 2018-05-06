@@ -24,11 +24,28 @@ public class Main {
 
         String query = "CREATE TABLE table1 (column1, column2, column3)";
         System.out.println("Creating table...");
+/*
         sqlParser.parseQuery(query);
         System.out.println();
 
+        sqlStorage.createTable("table1", "c1,c2,").send();
+
+        System.out.println(sqlStorage.getColumnName("table1", BigInteger.ZERO).send());
+        System.out.println(sqlStorage.getColumnName("table1", BigInteger.ONE).send());
+
+
+//        System.out.println(
+//                new MyService(
+//                        clientConfiguration.getDeploymentNodeURL(),
+//                        ethAccountClient.getWeb3j(),
+//                        sqlStorage.getContractAddress(),
+//                        sqlStorage.getTransactionManager()
+//                ).runErrorProneMethod("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,")
+//        );*/
+
         query = "INSERT INTO table1 (column1, column2, column3) VALUES (value11, value12, value13)(value21, value22, value23)(value31, value32, value33)";
         System.out.println("Inserting data...");
+
         sqlParser.parseQuery(query);
         System.out.println();
 
@@ -45,7 +62,21 @@ public class Main {
         System.out.println("Updating data...");
         sqlParser.parseQuery(query);
         System.out.println();
+        /*
+        sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla,pepe,").send();
 
+        System.out.println("Get Inserted Data...");
+        System.out.println(sqlStorage.getValue("table1", "c1", BigInteger.ZERO).send());
+        System.out.println(sqlStorage.getValue("table1", "c2", BigInteger.ZERO).send());
+
+        System.out.println("Select");
+        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ZERO, BigInteger.ZERO, "c1,c2,").send());
+
+        sqlStorage.insert("table1", new BigInteger("2"), "c1,c2,", "bla2,pepe2,").send();
+
+        System.out.println("Select");
+        System.out.println(sqlStorage.getSelect("table1", new BigInteger("2"), BigInteger.ONE, BigInteger.ZERO, "c1,c2,").send());
+*/
     }
 
     public static void main(String[] args) throws Exception {

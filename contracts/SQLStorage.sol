@@ -56,6 +56,7 @@ contract SQLStorage {
                 j = i + 1;
             }
         }
+        rowCount[tableName] = 0;
         tableExists[tableName] = true;
     }
 
@@ -91,15 +92,16 @@ contract SQLStorage {
                 columnName = columnNames[tableName][insertColumnIndex];
                 uint rowIndex = rowCount[tableName];
                 tables[tableName][columnName][rowIndex] = value;
-                rowCount[tableName] += 1;
                 j = i + 1;
                 k += 1;
             }
 
-            if (chars[i] == recordSeparator)
+            if (chars[i] == recordSeparator){
+                rowCount[tableName] += 1;
                 k = 0;
-
+            }
         }
+        rowCount[tableName] += 1;
     }
 
     // returns one row at a time
